@@ -13,6 +13,7 @@ NNSTEPS = np.array([
     (-1, 0)
 ])
 CHUNK_SIZE = 1000
+P = 0.9
 
 class Simulation(object):
     def __init__(self, num_particles):
@@ -82,7 +83,8 @@ class Simulation(object):
 
                 if np.any(particle_hits):
                     first_hit = particle_hits.nonzero()[0][0]
-                    if alive[first_hit]:
+                    if alive[first_hit] and np.random.random() < P:
+                    #if alive[first_hit]:
                         pos = tuple(moves[first_hit])
                         self.register_hit(pos)
                         break
@@ -103,16 +105,18 @@ def main():
     endtime = time.time()
     print "Ran in time:", (endtime - starttime)
     print "Maximum radius:", simulation.maxradius
+    print "Chunk Size:", CHUNK_SIZE
+    print "Probability to stick if hit:", P
 
-    ## select only the interesting parts
-    #M = simulation.maxradius
-    #grph = L - M, L + M
+    # select only the interesting parts
+    M = simulation.maxradius
+    grph = L - M, L + M
 
-    ## and plot
-    #axis = np.arange(-M, M + 1)
-    #pcolormesh(axis, axis, simulation.lattice[grph[0]:grph[1], grph[0]:grph[1]])
-    #axes().set_aspect('equal', 'datalim')
-    #show()
+    # and plot
+    axis = np.arange(-M, M + 1)
+    pcolormesh(axis, axis, simulation.lattice[grph[0]:grph[1], grph[0]:grph[1]])
+    axes().set_aspect('equal', 'datalim')
+    show()
 
 if __name__ == '__main__':
     main()
